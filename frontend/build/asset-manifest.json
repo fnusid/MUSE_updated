@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/human-audio-mixer/static/css/main.a58623eb.css",
+    "main.js": "/human-audio-mixer/static/js/main.9a11b87e.js",
+    "index.html": "/human-audio-mixer/index.html",
+    "main.a58623eb.css.map": "/human-audio-mixer/static/css/main.a58623eb.css.map",
+    "main.9a11b87e.js.map": "/human-audio-mixer/static/js/main.9a11b87e.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.a58623eb.css",
+    "static/js/main.9a11b87e.js"
+  ]
+}

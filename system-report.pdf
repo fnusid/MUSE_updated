@@ -1,0 +1,189 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [5 0 R 7 0 R] /Count 2 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+4 0 obj
+<< /Length 3220 >>
+stream
+BT
+/F1 10 Tf
+14 TL
+54 738 Td
+() Tj
+T*
+(Human Audio Mixer: System and Personalization Details) Tj
+T*
+(Generated: 2025-12-01) Tj
+T*
+() Tj
+T*
+(1\) System Overview) Tj
+T*
+(- Web frontend \(React\) + FastAPI backend. Demucs splits audio into 4 stems; frontend mixes) Tj
+T*
+(stems with user gains and plays returned WAV.) Tj
+T*
+(- Personalization is client-side using TensorFlow.js: learns per-user gain preferences from) Tj
+T*
+(extracted audio features + rule-based genre vector. Weights live in browser localStorage) Tj
+T*
+(\(key userModel_<userId>\).) Tj
+T*
+() Tj
+T*
+(2\) Backend: Separation and Mixing \(backend/main.py\)) Tj
+T*
+(- /start_separation: saves upload to backend/separated/input_<id>.wav, resets) Tj
+T*
+(demucs_progress.json, runs Demucs htdemucs in a thread, writes stems drums/bass/other/vocals) Tj
+T*
+(to backend/separated.) Tj
+T*
+(- Progress file demucs_progress.json holds {"progress": p} with p in [0,1];) Tj
+T*
+(/separation_progress reports status completed when p>=1.) Tj
+T*
+(- Separation path: mono duplicated to stereo -> tensor shape [1,2,N] ->) Tj
+T*
+(apply_model\(htdemucs\) -> stems saved.) Tj
+T*
+(- /mix: loads stems, applies per-stem gains, aligns lengths, sums, normalizes by peak, saves) Tj
+T*
+(to backend/mixed_outputs/final_mix_<id>.wav and returns /mixed_outputs/<id>.wav for) Tj
+T*
+(playback.) Tj
+T*
+(- Gain math: linear_gain = 10^\(gain_db/20\); mix is peak-normalized: mix = mix / max\(|mix|\).) Tj
+T*
+() Tj
+T*
+(3\) Frontend Feature Extraction \(frontend/src/utils/audioFeatures.js\)) Tj
+T*
+(- Uses Web Audio API to decode upload and compute 23 features: duration, sampleRate, RMS,) Tj
+T*
+(zeroCrossingRate, spectralCentroid, spectralRolloff \(85%% energy\), spectralFlux, tempo) Tj
+T*
+(heuristic, 5 MFCC-like log-energy bands, plus 10-elem genre vector.) Tj
+T*
+(- Normalization \(examples\): duration_norm = min\(duration/300,1\); sampleRate_norm = sr/48000;) Tj
+T*
+(rms_norm = min\(rms*10,1\); tempo_norm = \(tempo-60\)/120 \(from heuristic BPM peaks: bpm =) Tj
+T*
+(peaks/duration*60, clamped 60-180\).) Tj
+T*
+(- Genre heuristic: soft one-hot \(length 10\) based on tempo/centroid/flux/RMS; defaults to) Tj
+T*
+(pop-like prior when unknown.) Tj
+T*
+(- featuresToVector concatenates normalized scalars + genre vector => 23-D input to the) Tj
+T*
+(preference model.) Tj
+T*
+() Tj
+T*
+(4\) Personalization Model \(frontend/src/utils/userPreferenceModel.js\)) Tj
+T*
+(- Architecture: tf.sequential dense net, input 23 -> Dense64\(relu\) -> Dense32\(relu\) ->) Tj
+T*
+(Dense16\(relu\) -> Dense4\(tanh\).) Tj
+T*
+(- Output mapping: tanh gives y in [-1,1]; per-stem gain_db = y*18 - 6, then clamped to) Tj
+T*
+([-24,12] dB.) Tj
+T*
+(- Training target mapping: normalized_gain = \(gain_db + 6\)/18 to fit tanh range.) Tj
+T*
+(- Online train \(single song\): epochs=5, batch=1, Adam lr=0.001. Batch retrain: epochs=10,) Tj
+T*
+(batch<=8 over all saved songs with features+gains.) Tj
+T*
+(- Prediction flow: ensure init \(loads weights if present\) -> tensor2d\([features]\) ->) Tj
+T*
+(model.predict -> map to dB.) Tj
+T*
+(- Weight storage: model.getWeights\(\) -> arrays -> JSON in localStorage under key) Tj
+T*
+(userModel_<userId>; loadWeights rebuilds tensors from that JSON. Model is recreated and) Tj
+ET
+endstream
+endobj
+5 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 4 0 R >>
+endobj
+6 0 obj
+<< /Length 1409 >>
+stream
+BT
+/F1 10 Tf
+14 TL
+54 738 Td
+(weights restored on init.) Tj
+T*
+(- Saved songs: per-user array in localStorage key audioMixSongs; each entry stores title,) Tj
+T*
+(gains, and feature vector for retraining.) Tj
+T*
+() Tj
+T*
+(5\) Frontend Mixing UI \(frontend/src/components/Mixer.js\)) Tj
+T*
+(- Upload triggers /start_separation, then polls /separation_progress. Progress bar uses) Tj
+T*
+(returned progress in [0,1].) Tj
+T*
+(- Sliders labeled with stem emojis: Vocals \(🎤\), Drums \(🥁\), Bass \(🎶\), Other \(🎧\); values sent) Tj
+T*
+(to /mix for rendered playback. Real-time changes debounced and crossfaded to new mix URL.) Tj
+T*
+() Tj
+T*
+(6\) Data Persistence Locations) Tj
+T*
+(- Browser localStorage: userModel_<userId> \(TF.js weights\), audioMixSongs \(saved mixes with) Tj
+T*
+(gains+features\), museTheme \(UI preference\).) Tj
+T*
+(- Backend filesystem: backend/separated/ \(latest stems\), backend/mixed_outputs/ \(rendered) Tj
+T*
+(mixes\), backend/demucs_progress.json \(progress state\), backend/uploads/ \(raw uploads\),) Tj
+T*
+(backend/user_data/ \(reserved\).) Tj
+T*
+() Tj
+T*
+(7\) Key Formulas) Tj
+T*
+(- dB to linear: g_linear = 10^\(g_db/20\).) Tj
+T*
+(- Model output to dB: g_db = clamp\(tanh_out*18 - 6, -24, 12\).) Tj
+T*
+(- Training target: norm_gain = \(g_db + 6\)/18 mapped to [-1,1].) Tj
+T*
+(- Tempo heuristic: bpm = \(peak_count / duration_seconds\) * 60, clamped to [60,180].) Tj
+ET
+endstream
+endobj
+7 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 6 0 R >>
+endobj
+xref
+0 8
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000121 00000 n 
+0000000191 00000 n 
+0000003463 00000 n 
+0000003589 00000 n 
+0000005050 00000 n 
+trailer
+<< /Size 8 /Root 1 0 R >>
+startxref
+5176
+%%EOF

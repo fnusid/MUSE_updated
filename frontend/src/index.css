@@ -1,0 +1,87 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root{
+  --bg1:#0c0f1b;
+  --bg2:#171b2e;
+  --panel:#151931;
+  --surface:#111831;
+  --subtle:#0f152a;
+  --input:#0e1226;
+  --track:#0a0d1c;
+  --ring:#2a2f4a;
+  --muted:#9aa5c7;
+  --text:#e7eaf6;
+}
+
+.theme-dark{
+  --bg1:#0c0f1b;
+  --bg2:#171b2e;
+  --panel:#151931;
+  --surface:#111831;
+  --subtle:#0f152a;
+  --input:#0e1226;
+  --track:#0a0d1c;
+  --ring:#2a2f4a;
+  --muted:#9aa5c7;
+  --text:#e7eaf6;
+}
+
+.theme-light{
+  --bg1:#f4f6fb;
+  --bg2:#f9fbff;
+  --panel:#ffffff;
+  --surface:#eef1f8;
+  --subtle:#e7ebf6;
+  --input:#ffffff;
+  --track:#dfe6f5;
+  --ring:#c9d3e8;
+  --muted:#4b5563;
+  --text:#0f172a;
+}
+
+html, body, #root { height: 100%; }
+body {
+  background: var(--bg1);
+  color: var(--text);
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+}
+
+.panel{background:var(--panel);border:1px solid var(--ring);}
+.surface{background:var(--surface);border:1px solid var(--ring);}
+.subtle{background:var(--subtle);}
+.input-bg{background:var(--input);border:1px solid var(--ring);}
+.track{background:var(--track);}
+.text-primary{color:var(--text);}
+.text-muted{color:var(--muted);}
+/* modal glow */
+.modal-panel {
+  box-shadow: 0 10px 30px rgba(0,0,0,.5), 0 0 0 1px rgba(42,47,74,.6), 0 0 20px rgba(110,168,254,.2);
+}
+/* fader track vertical helper */
+.fader-rail {
+  height: 240px;
+  width: 56px;
+  position: relative;
+}
+.fader-track {
+  position:absolute;
+  width:8px;
+  height:200px;
+  top:20px;
+  left:24px;
+  background:#0a0d1c;
+  border:1px solid var(--ring);
+  border-radius:999px;
+}
+.fader-cap {
+  position:absolute;
+  width:48px;
+  height:28px;
+  left:4px;
+  border-radius:10px;
+  background:#4c63d3;
+  border:1px solid #6ea8fe;
+  box-shadow:0 6px 14px rgba(0,0,0,.45);
+}
